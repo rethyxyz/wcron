@@ -3,16 +3,22 @@
 # MAIN FUNCTION #
 #---------------#
 
+# Start this at zero. It starts iterating when we enter the main program loop.
 $lineCounter = 0
 $successCounter = 0
 $failCounter = 0
 
+# The name of the main source file (the one you're reading).
 $masterFilename = "wcron"
 
 # Executables
+#
+# Non-explicitly defined executables are supported. They're called using the
+# default case.
 $ytDlpExecutable = "$HOME\OneDrive\Projects\tools\yt-dlp-date.ps1"
 $galleryDlExecutable = "gallery-dl"
 
+# You'll eventually move back to this when file processing in complete.
 $initialDirectory = $(pwd)
 
 # Check if any config file was provided as an argument.
@@ -21,6 +27,10 @@ if (!($args[0]))
 	Write-Host "No configuration file(s) provided as argument(s). Quitting."
 	exit 1
 }
+
+#------------------#
+# CONFIG FILE LOOP #
+#------------------#
 
 foreach ($arg in $args)
 {
@@ -32,10 +42,14 @@ foreach ($arg in $args)
 
 	Write-Host "[CONFIG] Using $arg`n"
 
+	#----------------#
+	# FILE LINE LOOP #
+	#----------------#
+
 	foreach ($line in Get-Content $arg)
 	{
 
-		# increment the counter. Note: Start this at zero.
+		# Increment the current line counter.
 		$lineCounter += 1
 
 		# If comment is set to the first character of a string, skip the line. Let the user know.
@@ -65,6 +79,7 @@ foreach ($arg in $args)
 		{
 			Write-Host "line $lineCounter`: config syntax error"
 			Write-Host $line
+			# Iterate the fail total counter.
 			$failCounter += 1
 			continue
 		}
@@ -76,7 +91,7 @@ foreach ($arg in $args)
 		}
 
 		# Print a nice title. Add a new line to the end.
-		Write-Host "[URL]" $url "`n"
+		Write-Host "[URL]" $url
 
 		# Change to the destination directory.
 		Set-Location -Path $writePath
@@ -89,6 +104,7 @@ foreach ($arg in $args)
 			default      { &          $executable      $url; }
 		}
 
+		# Iterate the success total counter.
 		$successCounter += 1
 
 		# Go back to your initial directory.
@@ -96,6 +112,7 @@ foreach ($arg in $args)
 
 	}
 
+	# Tally messages.
 	Write-Host "`n[TOTALS]`nTotal URLs successfully processed: $successCounter"
 	Write-Host "Total URLs failed to process: $failCounter"
 
