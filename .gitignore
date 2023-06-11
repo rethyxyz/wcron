@@ -1,1 +1,6 @@
 debug.log
+*.jpg
+*.jpeg
+*.tiff
+*.raw
+*.bin
