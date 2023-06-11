@@ -36,11 +36,11 @@ foreach ($arg in $args)
 {
 	if (!(Test-Path -Path $arg -PathType Leaf))
 	{
-		Write-Host "[SKIPPING] Configuration file `""$arg"`" doesn't exist.`n"
+		Write-Host "[ERROR] Configuration file `""$arg"`" doesn't exist.`n"
 		continue;
 	}
 
-	Write-Host "[CONFIG] Using $arg`n"
+	Write-Host "[WARNING] Using $arg`n"
 
 	#----------------#
 	# FILE LINE LOOP #
@@ -55,7 +55,7 @@ foreach ($arg in $args)
 		# If comment is set to the first character of a string, skip the line. Let the user know.
 		if ($line.substring(0, 1) -Match "#")
 		{
-			Write-Host "[SKIPPING] Comment found at line $lineCounter.`n"
+			Write-Host "[WARNING] Comment found at line $lineCounter.`n"
 			continue;
 		}
 
@@ -69,7 +69,7 @@ foreach ($arg in $args)
 		# Check that both executables exist.
 		if (!(Test-Path $executable -PathType Leaf) -And !(Get-Command $executable -ErrorAction SilentlyContinue))
 		{
-			Write-Host $executable "doesn't exist. Ensure it's installed before running $masterFilename."
+			Write-Host "[ERROR] `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename."
 			$failCounter += 1
 			continue;
 		}
@@ -77,7 +77,7 @@ foreach ($arg in $args)
 		# Check if any variables are empty. If so, trigger a syntax error.
 		if ((!($url)) -or (!($writePath)) -or (!($executable)))
 		{
-			Write-Host "line $lineCounter`: config syntax error"
+			Write-Host "[ERROR] line $lineCounter`: config syntax error"
 			Write-Host $line
 			# Iterate the fail total counter.
 			$failCounter += 1
@@ -85,13 +85,10 @@ foreach ($arg in $args)
 		}
 
 		# Check if the write path exists. If not, create it.
-		if (!(Test-Path $writePath -PathType Container))
-		{
-			mkdir $writePath
-		}
+		if (!(Test-Path $writePath -PathType Container)) { mkdir $writePath }
 
-		# Print a nice title. Add a new line to the end.
-		Write-Host "[URL]" $url
+		# Print a nice title.
+		Write-Host "[-- $url --]"
 
 		# Change to the destination directory.
 		Set-Location -Path $writePath
@@ -113,7 +110,7 @@ foreach ($arg in $args)
 	}
 
 	# Tally messages.
-	Write-Host "`n[TOTALS]`nTotal URLs successfully processed: $successCounter"
-	Write-Host "Total URLs failed to process: $failCounter"
+	Write-Host "[WARNING] Total URLs successfully processed: $successCounter"
+	Write-Host "[WARNING] Total URLs failed to process: $failCounter"
 
 }
