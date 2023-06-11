@@ -52,6 +52,11 @@ foreach ($arg in $args)
 		# Increment the current line counter.
 		$lineCounter += 1
 
+		if (! $line)
+		{
+			continue;
+		}
+
 		# If comment is set to the first character of a string, skip the line. Let the user know.
 		if ($line.substring(0, 1) -Match "#")
 		{
@@ -69,7 +74,7 @@ foreach ($arg in $args)
 		# Check that both executables exist.
 		if (!(Test-Path $executable -PathType Leaf) -And !(Get-Command $executable -ErrorAction SilentlyContinue))
 		{
-			Write-Host "[ERROR] `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename."
+			Write-Host "[ERROR] line $lineCounter`: `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename.`n"
 			$failCounter += 1
 			continue;
 		}
