@@ -23,6 +23,5 @@ Each entry is commma delimited. Tabs are allowed between commas and the start of
 Comments can be invoked using the `#` character at the start of a line.
 
 ## TODO
-- [] Executables should be dynamically received. Execs should be able to contain
-args.
-- [] Improve status text.
+- [ ] Executables should be dynamically received. Execs should be able to contain args.
+- [ ] Improve status text.
