@@ -4,3 +4,4 @@ debug.log
 *.tiff
 *.raw
 *.bin
+*.wcron
