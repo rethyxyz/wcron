@@ -70,14 +70,7 @@ foreach ($arg in $args)
 		$writePath = $line | foreach-object{($_ -split ",")[1]}; $writePath = $writePath.Trim();
 		# executable is the program path or relative path files will be pulled down using.
 		$executable = $line | foreach-object{($_ -split ",")[2]}; $executable = $executable.Trim();
-
-		# Check that both executables exist.
-		if (!(Test-Path $executable -PathType Leaf) -And !(Get-Command $executable -ErrorAction SilentlyContinue))
-		{
-			Write-Host "[ERROR] line $lineCounter`: `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename.`n"
-			$failCounter += 1
-			continue;
-		}
+		$driveLetter = Split-Path -Path $writePath -Qualifier
 
 		# Check if any variables are empty. If so, trigger a syntax error.
 		if ((!($url)) -or (!($writePath)) -or (!($executable)))
@@ -87,6 +80,21 @@ foreach ($arg in $args)
 			# Iterate the fail total counter.
 			$failCounter += 1
 			continue
+		}
+
+		if (!(Test-Path $driveLetter -PathType Container))
+		{
+			Write-Host "[ERROR] line $lineCounter`: Drive letter `"$driveLetter`" in `"$writePath`" doesn't exist.`n"
+			$failCounter += 1
+			continue;
+		}
+
+		# Check that both executables exist.
+		if (!(Test-Path $executable -PathType Leaf) -And !(Get-Command $executable -ErrorAction SilentlyContinue))
+		{
+			Write-Host "[ERROR] line $lineCounter`: `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename.`n"
+			$failCounter += 1
+			continue;
 		}
 
 		# Check if the write path exists. If not, create it.
