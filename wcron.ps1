@@ -52,6 +52,7 @@ foreach ($arg in $args)
 		# Increment the current line counter.
 		$lineCounter += 1
 
+		# If empty line, skip.
 		if (! $line)
 		{
 			continue;
@@ -85,16 +86,18 @@ foreach ($arg in $args)
 		if (!(Test-Path $driveLetter -PathType Container))
 		{
 			Write-Host "[ERROR] line $lineCounter`: Drive letter `"$driveLetter`" in `"$writePath`" doesn't exist.`n"
+			# Iterate the fail total counter.
 			$failCounter += 1
-			continue;
+			continue
 		}
 
 		# Check that both executables exist.
 		if (!(Test-Path $executable -PathType Leaf) -And !(Get-Command $executable -ErrorAction SilentlyContinue))
 		{
 			Write-Host "[ERROR] line $lineCounter`: `"$executable`" doesn't exist. Ensure it's installed before running $masterFilename.`n"
+			# Iterate the fail total counter.
 			$failCounter += 1
-			continue;
+			continue
 		}
 
 		# Check if the write path exists. If not, create it.
