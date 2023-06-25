@@ -25,3 +25,5 @@ Comments can be invoked using the `#` character at the start of a line.
 ## TODO
 - [ ] Executables should be dynamically received. Execs should be able to contain args.
 - [ ] Improve status text.
+- [ ] Look into C# conversion
+    - https://github.com/Bluegrams/YoutubeDLSharp
